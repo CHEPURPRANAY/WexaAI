@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../context/AuthContext';
-import toast from 'react-hot-toast';
+import AlertMessage from '../../components/common/AlertMessage';
 
 const Signup = () => {
   const navigate = useNavigate();
   const { signup } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState(null);
   
   const {
     register,
@@ -17,16 +18,31 @@ const Signup = () => {
 
   const onSubmit = async (data) => {
     setLoading(true);
+    setAlert(null);
     try {
       const result = await signup(data);
       if (result.success) {
-        toast.success('Account created successfully!');
-        navigate('/dashboard');
+        setAlert({
+          type: 'success',
+          title: 'Account Created Successfully!',
+          message: 'Welcome to StockFlow! Redirecting to your dashboard...'
+        });
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 2000);
       } else {
-        toast.error(result.message);
+        setAlert({
+          type: 'error',
+          title: 'Sign Up Failed',
+          message: result.message || 'Please check your information and try again.'
+        });
       }
     } catch (error) {
-      toast.error('An unexpected error occurred');
+      setAlert({
+        type: 'error',
+        title: 'Unexpected Error',
+        message: 'Something went wrong. Please try again later.'
+      });
     } finally {
       setLoading(false);
     }
@@ -49,6 +65,16 @@ const Signup = () => {
             </Link>
           </p>
         </div>
+        
+        {alert && (
+          <AlertMessage
+            type={alert.type}
+            title={alert.title}
+            message={alert.message}
+            onDismiss={() => setAlert(null)}
+            className="auth-alert"
+          />
+        )}
         
         <form className="auth-form" onSubmit={handleSubmit(onSubmit)}>
           <div className="auth-form-group">
@@ -115,7 +141,7 @@ const Signup = () => {
             disabled={loading}
             className={`btn btn-primary btn-full ${loading ? 'loading' : ''}`}
           >
-            {loading ? 'Creating account...' : 'Create account'}
+            {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>
       </div>

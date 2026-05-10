@@ -2,31 +2,62 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../context/AuthContext';
-import toast from 'react-hot-toast';
+import AlertMessage from '../../components/common/AlertMessage';
 
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState(null);
   
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
 
   const onSubmit = async (data) => {
     setLoading(true);
+    setAlert(null);
+    
     try {
       const result = await login(data);
       if (result.success) {
-        toast.success('Login successful!');
-        navigate('/dashboard');
+        setAlert({
+          type: 'success',
+          title: 'Login Successful!',
+          message: 'Welcome back! Redirecting to your dashboard...'
+        });
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 1500);
       } else {
-        toast.error(result.message);
+        const userNotFoundKeywords = ['not found', 'does not exist', 'no account', 'invalid email', 'user not', 'sign up'];
+        const isUserNotFound = userNotFoundKeywords.some(keyword => 
+          result.message.toLowerCase().includes(keyword)
+        );
+        
+        if (isUserNotFound) {
+          setAlert({
+            type: 'warning',
+            title: 'Account Not Found',
+            message: `${result.message} Would you like to create a new account?`
+          });
+        } else {
+          setAlert({
+            type: 'error',
+            title: 'Invalid Credentials',
+            message: result.message || 'Please check your email and password and try again.'
+          });
+        }
       }
     } catch (error) {
-      toast.error('An unexpected error occurred');
+      setAlert({
+        type: 'error',
+        title: 'Login Failed',
+        message: 'An unexpected error occurred. Please try again.'
+      });
     } finally {
       setLoading(false);
     }
@@ -49,6 +80,16 @@ const Login = () => {
             </Link>
           </p>
         </div>
+        
+        {alert && (
+          <AlertMessage
+            type={alert.type}
+            title={alert.title}
+            message={alert.message}
+            onDismiss={() => setAlert(null)}
+            className="auth-alert"
+          />
+        )}
         
         <form className="auth-form" onSubmit={handleSubmit(onSubmit)}>
           <div className="auth-form-group">
