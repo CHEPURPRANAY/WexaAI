@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import toast from 'react-hot-toast';
-import { CogIcon } from '@heroicons/react/24/outline';
+import AlertMessage from '../../components/common/AlertMessage';
+import { CogIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import '../../styles/pages/settings.css';
 
 const Settings = () => {
   const [settings, setSettings] = useState({
@@ -9,6 +10,7 @@ const Settings = () => {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [alert, setAlert] = useState(null);
 
   useEffect(() => {
     fetchSettings();
@@ -25,7 +27,11 @@ const Settings = () => {
       });
     } catch (error) {
       console.error('Error fetching settings:', error);
-      toast.error('Failed to load settings');
+      setAlert({
+        type: 'error',
+        title: 'Failed to Load Settings',
+        message: 'Unable to load your settings. Please refresh the page and try again.'
+      });
     } finally {
       setLoading(false);
     }
@@ -34,6 +40,7 @@ const Settings = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
+    setAlert(null);
 
     try {
       const response = await api.put('/settings', {
@@ -41,19 +48,31 @@ const Settings = () => {
       });
       
       if (response.data.success) {
-        toast.success('Settings updated successfully');
+        setAlert({
+          type: 'success',
+          title: 'Settings Updated Successfully',
+          message: 'Your changes have been saved and applied to your inventory management.'
+        });
         // Update local state with the confirmed values from backend
         const updatedSettings = response.data.data.settings;
         setSettings({
           defaultLowStockThreshold: updatedSettings.default_low_stock_threshold
         });
       } else {
-        toast.error(response.data.message || 'Failed to update settings');
+        setAlert({
+          type: 'error',
+          title: 'Update Failed',
+          message: response.data.message || 'Failed to update settings. Please try again.'
+        });
       }
     } catch (error) {
       console.error('Error updating settings:', error);
       const errorMessage = error.response?.data?.message || 'Failed to update settings';
-      toast.error(errorMessage);
+      setAlert({
+        type: 'error',
+        title: 'Update Failed',
+        message: errorMessage
+      });
     } finally {
       setSaving(false);
     }
@@ -69,13 +88,19 @@ const Settings = () => {
 
   if (loading) {
     return (
-      <div className="p-8">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="space-y-4">
-              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              <div className="h-10 bg-gray-200 rounded w-1/3"></div>
+      <div className="settings-container">
+        <div className="settings-wrapper">
+          <div className="settings-loading">
+            <div className="settings-loading-card">
+              <div className="settings-skeleton title"></div>
+              <div className="settings-skeleton text"></div>
+              <div className="settings-skeleton input"></div>
+              <div className="settings-skeleton button"></div>
+            </div>
+            <div className="settings-loading-card">
+              <div className="settings-skeleton title"></div>
+              <div className="settings-skeleton text"></div>
+              <div className="settings-skeleton input"></div>
             </div>
           </div>
         </div>
@@ -84,84 +109,111 @@ const Settings = () => {
   }
 
   return (
-    <div className="p-8">
-      {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <p className="mt-2 text-gray-600">Manage your application settings</p>
-      </div>
-
-      <div className="max-w-2xl">
-        {/* Settings Card */}
-        <div className="card">
-          <div className="card-header">
-            <div className="flex items-center">
-              <CogIcon className="text-gray-400 mr-3" />
-              <div>
-                <h3 className="card-title">Inventory Settings</h3>
-                <p className="card-description">
-                  Configure default values for your inventory management
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="card-body">
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="defaultLowStockThreshold" className="form-label">
-                  Default Low Stock Threshold
-                </label>
-                <p className="form-description">
-                  This value will be used as default low stock threshold for new products.
-                  Products with quantity at or below this value will be marked as low stock.
-                </p>
-                <input
-                  type="number"
-                  id="defaultLowStockThreshold"
-                  name="defaultLowStockThreshold"
-                  min="0"
-                  value={settings.defaultLowStockThreshold}
-                  onChange={(e) => handleChange(e)}
-                  className="form-input"
-                  placeholder="5"
-                />
-              </div>
-
-              <div className="mt-6">
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className={`btn btn-primary ${saving ? 'loading' : ''}`}
-                >
-                  {saving ? 'Saving...' : 'Save Settings'}
-                </button>
-              </div>
-            </form>
-          </div>
+    <div className="settings-container">
+      <div className="settings-wrapper">
+        {/* Page Header */}
+        <div className="settings-header">
+          <h1 className="settings-title">Settings</h1>
+          <p className="settings-subtitle">
+            Manage your application preferences and inventory configuration
+          </p>
         </div>
 
-        {/* Account Information Card */}
-        <div className="card mt-8">
-          <div className="card-header">
-            <h3 className="card-title">Account Information</h3>
+        {/* Alert Messages */}
+        {alert && (
+          <AlertMessage
+            type={alert.type}
+            title={alert.title}
+            message={alert.message}
+            onDismiss={() => setAlert(null)}
+            className="settings-alert"
+          />
+        )}
+
+        <div className="settings-grid">
+          {/* Inventory Settings Card */}
+          <div className="settings-card">
+            <div className="settings-card-header">
+              <div className="settings-card-title-section">
+                <div className="settings-card-icon">
+                  <CogIcon />
+                </div>
+                <div>
+                  <h2 className="settings-card-title">Inventory Settings</h2>
+                  <p className="settings-card-description">
+                    Configure default values for your inventory management system
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="settings-card-body">
+              <form className="settings-form" onSubmit={handleSubmit}>
+                <div className="settings-form-group">
+                  <label htmlFor="defaultLowStockThreshold" className="settings-form-label required">
+                    Default Low Stock Threshold
+                  </label>
+                  <p className="settings-form-description">
+                    This value will be used as the default low stock threshold for new products. 
+                    Products with quantity at or below this value will be marked as low stock.
+                  </p>
+                  <input
+                    type="number"
+                    id="defaultLowStockThreshold"
+                    name="defaultLowStockThreshold"
+                    min="0"
+                    value={settings.defaultLowStockThreshold}
+                    onChange={(e) => handleChange(e)}
+                    className="settings-form-input"
+                    placeholder="5"
+                  />
+                </div>
+
+                <div className="settings-form-actions">
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className={`settings-btn settings-btn-primary ${saving ? 'loading' : ''}`}
+                  >
+                    {saving ? 'Saving Changes...' : 'Save Settings'}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-          <div className="card-body">
-            <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-              <div>
-                <dt className="text-sm font-medium text-gray-500">Organization</dt>
-                <dd className="mt-1 text-sm text-gray-900">
-                  <span className="alert-badge info">
-                    {JSON.parse(localStorage.getItem('user') || '{}')?.organization_name || 'Loading...'}
-                  </span>
-                </dd>
+
+          {/* Account Information Card */}
+          <div className="settings-card">
+            <div className="settings-card-header">
+              <div className="settings-card-title-section">
+                <div className="settings-card-icon">
+                  <UserCircleIcon />
+                </div>
+                <div>
+                  <h2 className="settings-card-title">Account Information</h2>
+                  <p className="settings-card-description">
+                    View your organization and account details
+                  </p>
+                </div>
               </div>
-              <div>
-                <dt className="text-sm font-medium text-gray-500">Email</dt>
-                <dd className="mt-1 text-sm text-gray-900">
-                  {JSON.parse(localStorage.getItem('user') || '{}')?.email || 'Loading...'}
-                </dd>
+            </div>
+            <div className="settings-card-body">
+              <div className="account-info-grid">
+                <div className="account-info-item">
+                  <span className="account-info-label">Organization</span>
+                  <div className="account-info-value">
+                    <span className="account-info-badge">
+                      {JSON.parse(localStorage.getItem('user') || '{}')?.organization_name || 'Loading...'}
+                    </span>
+                  </div>
+                </div>
+                <div className="account-info-item">
+                  <span className="account-info-label">Email Address</span>
+                  <div className="account-info-value">
+                    {JSON.parse(localStorage.getItem('user') || '{}')?.email || 'Loading...'}
+                  </div>
+                </div>
               </div>
-            </dl>
+            </div>
           </div>
         </div>
       </div>

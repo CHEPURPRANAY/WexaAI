@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import toast from 'react-hot-toast';
+import AlertMessage from '../common/AlertMessage';
 import { useForm } from 'react-hook-form';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, CubeIcon, PencilIcon } from '@heroicons/react/24/outline';
+import '../../styles/components/forms-enhanced.css';
 
 const ProductForm = ({ product, onSuccess, onCancel }) => {
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState(null);
   const isEditing = !!product;
 
   const {
@@ -43,91 +45,133 @@ const ProductForm = ({ product, onSuccess, onCancel }) => {
 
   const onSubmit = async (data) => {
     setLoading(true);
+    setAlert(null);
     try {
       if (isEditing) {
         const response = await api.put(`/products/${product.id}`, data);
-        toast.success('Product updated successfully');
+        setAlert({
+          type: 'success',
+          title: 'Product Updated Successfully!',
+          message: `${data.name} has been updated in your inventory.`
+        });
         // Pass the updated product back for instant UI update
-        onSuccess(response.data.data.product);
+        setTimeout(() => {
+          onSuccess(response.data.data.product);
+        }, 1500);
       } else {
         const response = await api.post('/products', data);
-        toast.success('Product created successfully');
+        setAlert({
+          type: 'success',
+          title: 'Product Created Successfully!',
+          message: `${data.name} has been added to your inventory.`
+        });
         // Pass the new product back for instant UI update
-        onSuccess(response.data.data.product);
+        setTimeout(() => {
+          onSuccess(response.data.data.product);
+        }, 1500);
       }
     } catch (error) {
       console.error('Error saving product:', error);
       const message =
         error.response?.data?.message ||
         `Failed to ${isEditing ? 'update' : 'create'} product`;
-      toast.error(message);
+      setAlert({
+        type: 'error',
+        title: `${isEditing ? 'Update' : 'Creation'} Failed`,
+        message: message
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal modal-lg modal-form">
-        <div className="modal-header">
-          <h3 className="modal-title">
-            {isEditing ? 'Edit Product' : 'Add New Product'}
-          </h3>
-          <button onClick={onCancel} className="modal-close">
+    <div className="modal-enhanced-overlay">
+      <div className="modal-enhanced modal-lg modal-form">
+        <div className="modal-enhanced-header">
+          <div className="modal-enhanced-title-section">
+            <div className="modal-enhanced-icon">
+              {isEditing ? <PencilIcon /> : <CubeIcon />}
+            </div>
+            <div>
+              <h2 className="modal-enhanced-title">
+                {isEditing ? 'Edit Product' : 'Add New Product'}
+              </h2>
+            </div>
+          </div>
+          <button onClick={onCancel} className="modal-enhanced-close">
             <XMarkIcon />
           </button>
         </div>
 
-        <div className="modal-body">
-          <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="modal-enhanced-body">
+          {/* Alert Messages */}
+          {alert && (
+            <AlertMessage
+              type={alert.type}
+              title={alert.title}
+              message={alert.message}
+              onDismiss={() => setAlert(null)}
+              className="form-alert"
+            />
+          )}
+
+          <form className="form-enhanced" onSubmit={handleSubmit(onSubmit)}>
             {/* Product Name */}
-            <div className="form-group">
-              <label htmlFor="name" className="form-label required">
+            <div className="form-enhanced-group">
+              <label htmlFor="name" className="form-enhanced-label required">
                 Product Name
               </label>
               <input
                 type="text"
                 id="name"
                 {...register('name', { required: 'Product name is required' })}
-                className={`form-input ${errors.name ? 'error' : ''}`}
+                className={`form-enhanced-input ${errors.name ? 'error' : ''}`}
                 placeholder="Enter product name"
               />
-              {errors.name && <p className="form-error">{errors.name.message}</p>}
+              {errors.name && (
+                <p className="form-enhanced-error">{errors.name.message}</p>
+              )}
             </div>
 
             {/* SKU */}
-            <div className="form-group">
-              <label htmlFor="sku" className="form-label required">
+            <div className="form-enhanced-group">
+              <label htmlFor="sku" className="form-enhanced-label required">
                 SKU
               </label>
               <input
                 type="text"
                 id="sku"
                 {...register('sku', { required: 'SKU is required' })}
-                className={`form-input ${errors.sku ? 'error' : ''}`}
+                className={`form-enhanced-input ${errors.sku ? 'error' : ''}`}
                 placeholder="Enter SKU"
               />
-              {errors.sku && <p className="form-error">{errors.sku.message}</p>}
+              {errors.sku && (
+                <p className="form-enhanced-error">{errors.sku.message}</p>
+              )}
             </div>
 
             {/* Description */}
-            <div className="form-group">
-              <label htmlFor="description" className="form-label">
+            <div className="form-enhanced-group">
+              <label htmlFor="description" className="form-enhanced-label">
                 Description
               </label>
               <textarea
                 id="description"
                 rows={3}
                 {...register('description')}
-                className="form-input form-textarea"
+                className="form-enhanced-input form-enhanced-textarea"
                 placeholder="Enter product description (optional)"
               />
+              <p className="form-enhanced-help">
+                Add a detailed description to help identify this product in your inventory.
+              </p>
             </div>
 
             {/* Quantity & Low Stock Threshold */}
-            <div className="form-row form-row-2">
-              <div className="form-group">
-                <label htmlFor="quantity" className="form-label">
+            <div className="form-enhanced-row form-enhanced-row-2">
+              <div className="form-enhanced-group">
+                <label htmlFor="quantity" className="form-enhanced-label">
                   Quantity
                 </label>
                 <input
@@ -138,16 +182,16 @@ const ProductForm = ({ product, onSuccess, onCancel }) => {
                     valueAsNumber: true,
                     min: { value: 0, message: 'Quantity cannot be negative' },
                   })}
-                  className={`form-input ${errors.quantity ? 'error' : ''}`}
+                  className={`form-enhanced-input ${errors.quantity ? 'error' : ''}`}
                   placeholder="0"
                 />
                 {errors.quantity && (
-                  <p className="form-error">{errors.quantity.message}</p>
+                  <p className="form-enhanced-error">{errors.quantity.message}</p>
                 )}
               </div>
 
-              <div className="form-group">
-                <label htmlFor="lowStockThreshold" className="form-label">
+              <div className="form-enhanced-group">
+                <label htmlFor="lowStockThreshold" className="form-enhanced-label">
                   Low Stock Threshold
                 </label>
                 <input
@@ -158,19 +202,19 @@ const ProductForm = ({ product, onSuccess, onCancel }) => {
                     valueAsNumber: true,
                     min: { value: 0, message: 'Threshold cannot be negative' },
                   })}
-                  className={`form-input ${errors.lowStockThreshold ? 'error' : ''}`}
+                  className={`form-enhanced-input ${errors.lowStockThreshold ? 'error' : ''}`}
                   placeholder="5"
                 />
                 {errors.lowStockThreshold && (
-                  <p className="form-error">{errors.lowStockThreshold.message}</p>
+                  <p className="form-enhanced-error">{errors.lowStockThreshold.message}</p>
                 )}
               </div>
             </div>
 
             {/* Cost & Selling Price */}
-            <div className="form-row form-row-2">
-              <div className="form-group">
-                <label htmlFor="costPrice" className="form-label">
+            <div className="form-enhanced-row form-enhanced-row-2">
+              <div className="form-enhanced-group">
+                <label htmlFor="costPrice" className="form-enhanced-label">
                   Cost Price ($)
                 </label>
                 <input
@@ -182,16 +226,16 @@ const ProductForm = ({ product, onSuccess, onCancel }) => {
                     valueAsNumber: true,
                     min: { value: 0, message: 'Cost price cannot be negative' },
                   })}
-                  className={`form-input ${errors.costPrice ? 'error' : ''}`}
+                  className={`form-enhanced-input ${errors.costPrice ? 'error' : ''}`}
                   placeholder="0.00"
                 />
                 {errors.costPrice && (
-                  <p className="form-error">{errors.costPrice.message}</p>
+                  <p className="form-enhanced-error">{errors.costPrice.message}</p>
                 )}
               </div>
 
-              <div className="form-group">
-                <label htmlFor="sellingPrice" className="form-label">
+              <div className="form-enhanced-group">
+                <label htmlFor="sellingPrice" className="form-enhanced-label">
                   Selling Price ($)
                 </label>
                 <input
@@ -205,27 +249,27 @@ const ProductForm = ({ product, onSuccess, onCancel }) => {
                     validate: (value) =>
                       value >= 0.01 || 'Selling price must be at least $0.01',
                   })}
-                  className={`form-input ${errors.sellingPrice ? 'error' : ''}`}
+                  className={`form-enhanced-input ${errors.sellingPrice ? 'error' : ''}`}
                   placeholder="0.00"
                 />
                 {errors.sellingPrice && (
-                  <p className="form-error">{errors.sellingPrice.message}</p>
+                  <p className="form-enhanced-error">{errors.sellingPrice.message}</p>
                 )}
               </div>
             </div>
 
-            <div className="modal-footer">
+            <div className="modal-enhanced-footer">
               <button
                 type="button"
                 onClick={onCancel}
-                className="btn btn-secondary"
+                className="btn-enhanced btn-enhanced-secondary"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className={`btn btn-primary ${loading ? 'loading' : ''}`}
+                className={`btn-enhanced btn-enhanced-primary ${loading ? 'loading' : ''}`}
               >
                 {loading
                   ? 'Saving...'
