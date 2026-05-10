@@ -10,12 +10,10 @@ const ErrorMessage = ({
 }) => {
   if (!error) return null;
 
-  const iconClasses = {
-    error: 'text-error-600',
-    warning: 'text-warning-600',
-    info: 'text-primary-600',
-    success: 'text-success-600'
-  };
+  const iconClasses = variant === 'error' ? 'text-error-600' : 
+                  variant === 'warning' ? 'text-warning-600' : 
+                  variant === 'info' ? 'text-primary-600' : 
+                  'text-success-600';
 
   const bgClasses = {
     error: 'bg-error-50 border-error-200',
@@ -27,7 +25,7 @@ const ErrorMessage = ({
   return (
     <div className={`alert ${bgClasses[variant]} ${className}`}>
       {showIcon && (
-        <div className="alert-icon">
+        <div className={`alert-icon ${iconClasses}`}>
           {variant === 'error' && <ExclamationTriangleIcon />}
           {variant === 'warning' && <ExclamationTriangleIcon />}
           {variant === 'info' && <ExclamationTriangleIcon />}

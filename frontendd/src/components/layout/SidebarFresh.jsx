@@ -9,8 +9,7 @@ import {
   Bars3Icon,
   XMarkIcon,
   ChevronLeftIcon,
-  ChevronRightIcon,
-  UserIcon
+  ChevronRightIcon
 } from '@heroicons/react/24/outline';
 
 const SidebarFresh = ({ onCollapseChange }) => {

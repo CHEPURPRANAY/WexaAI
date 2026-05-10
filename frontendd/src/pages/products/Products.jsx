@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../api/axios';
 import AlertMessage from '../../components/common/AlertMessage';
 import {
@@ -21,11 +21,7 @@ const Products = () => {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [alert, setAlert] = useState(null);
 
-  useEffect(() => {
-    fetchProducts();
-  }, [searchTerm]);
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       const response = await api.get('/products', {
         params: searchTerm ? { search: searchTerm } : {}
@@ -41,7 +37,11 @@ const Products = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchTerm]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [searchTerm, fetchProducts]);
 
   const handleAddProduct = () => {
     setEditingProduct(null);
