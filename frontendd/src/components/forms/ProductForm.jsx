@@ -28,7 +28,16 @@ const ProductForm = ({ product, onSuccess, onCancel }) => {
   // Reset form when product prop changes (for editing)
   useEffect(() => {
     if (product) {
-      reset(product);
+      // Map database field names to form field names
+      reset({
+        name: product.name || '',
+        sku: product.sku || '',
+        description: product.description || '',
+        quantity: product.quantity || 0,
+        costPrice: product.cost_price || 0,
+        sellingPrice: product.selling_price || 0,
+        lowStockThreshold: product.low_stock_threshold || 5,
+      });
     }
   }, [product, reset]);
 
@@ -36,13 +45,16 @@ const ProductForm = ({ product, onSuccess, onCancel }) => {
     setLoading(true);
     try {
       if (isEditing) {
-        await api.put(`/products/${product.id}`, data);
+        const response = await api.put(`/products/${product.id}`, data);
         toast.success('Product updated successfully');
+        // Pass the updated product back for instant UI update
+        onSuccess(response.data.data.product);
       } else {
-        await api.post('/products', data);
+        const response = await api.post('/products', data);
         toast.success('Product created successfully');
+        // Pass the new product back for instant UI update
+        onSuccess(response.data.data.product);
       }
-      onSuccess();
     } catch (error) {
       console.error('Error saving product:', error);
       const message =

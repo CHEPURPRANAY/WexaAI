@@ -57,13 +57,25 @@ const updateSettings = async (req, res) => {
       });
     }
     
-    // Update or insert settings
-    await db.query(
-      `INSERT INTO settings (organization_id, default_low_stock_threshold)
-       VALUES (?, ?)
-       ON DUPLICATE KEY UPDATE default_low_stock_threshold = ?`,
-      [organizationId, defaultLowStockThreshold, defaultLowStockThreshold]
+    // First, check if settings exist
+    const [existingSettings] = await db.query(
+      'SELECT id FROM settings WHERE organization_id = ?',
+      [organizationId]
     );
+    
+    if (existingSettings.length > 0) {
+      // Update existing settings
+      await db.query(
+        'UPDATE settings SET default_low_stock_threshold = ? WHERE organization_id = ?',
+        [defaultLowStockThreshold, organizationId]
+      );
+    } else {
+      // Insert new settings
+      await db.query(
+        'INSERT INTO settings (organization_id, default_low_stock_threshold) VALUES (?, ?)',
+        [organizationId, defaultLowStockThreshold]
+      );
+    }
     
     // Get updated settings
     const [updatedSettings] = await db.query(

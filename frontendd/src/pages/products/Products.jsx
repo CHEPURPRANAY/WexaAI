@@ -49,20 +49,38 @@ const Products = () => {
 
   const handleDeleteProduct = async (productId) => {
     try {
-      await api.delete(`/products/${productId}`);
-      toast.success('Product deleted successfully');
-      fetchProducts();
+      const response = await api.delete(`/products/${productId}`);
+      
+      if (response.data.success) {
+        // Immediately remove the product from the local state for instant UI update
+        setProducts((prevProducts) => prevProducts.filter((p) => p.id !== productId));
+        toast.success('Product deleted successfully');
+      } else {
+        toast.error(response.data.message || 'Failed to delete product');
+      }
+      
       setDeleteConfirm(null);
     } catch (error) {
       console.error('Error deleting product:', error);
-      toast.error('Failed to delete product');
+      const errorMessage = error.response?.data?.message || 'Failed to delete product';
+      toast.error(errorMessage);
+      setDeleteConfirm(null);
     }
   };
 
-  const handleFormSuccess = () => {
+  const handleFormSuccess = (updatedProduct = null) => {
     setShowForm(false);
     setEditingProduct(null);
-    fetchProducts();
+    
+    if (updatedProduct) {
+      // If we have the updated product, update it directly in state for instant feedback
+      setProducts((prevProducts) =>
+        prevProducts.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+      );
+    } else {
+      // Otherwise fetch fresh data from the database
+      fetchProducts();
+    }
   };
 
   const getStockStatus = (product) => {
@@ -117,7 +135,7 @@ const Products = () => {
       {/* Search Bar */}
       <div className="mb-6">
         <div className="relative">
-          <MagnifyingGlassIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+          {/* <MagnifyingGlassIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" /> */}
           <input
             type="text"
             className="form-input pl-10"
@@ -178,7 +196,7 @@ const Products = () => {
                     </td>
                     <td className="table-cell-secondary">{product.sku}</td>
                     <td className="table-cell-primary">{product.quantity}</td>
-                    <td className="table-cell-primary">${product.selling_price.toFixed(2)}</td>
+                    <td className="table-cell-primary">${Number(product.selling_price).toFixed(2)}</td>
                     <td>
                       <span className={`table-status ${stockStatus.className}`}>
                         {stockStatus.text}

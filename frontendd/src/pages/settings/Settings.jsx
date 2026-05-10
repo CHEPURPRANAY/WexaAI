@@ -17,7 +17,12 @@ const Settings = () => {
   const fetchSettings = async () => {
     try {
       const response = await api.get('/settings');
-      setSettings(response.data.data.settings);
+      const dbSettings = response.data.data.settings;
+      
+      // Map database field names to frontend field names
+      setSettings({
+        defaultLowStockThreshold: dbSettings.default_low_stock_threshold || 5
+      });
     } catch (error) {
       console.error('Error fetching settings:', error);
       toast.error('Failed to load settings');
@@ -31,13 +36,24 @@ const Settings = () => {
     setSaving(true);
 
     try {
-      await api.put('/settings', {
-        defaultLowStockThreshold: settings.defaultLowStockThreshold
+      const response = await api.put('/settings', {
+        defaultLowStockThreshold: Number(settings.defaultLowStockThreshold)
       });
-      toast.success('Settings updated successfully');
+      
+      if (response.data.success) {
+        toast.success('Settings updated successfully');
+        // Update local state with the confirmed values from backend
+        const updatedSettings = response.data.data.settings;
+        setSettings({
+          defaultLowStockThreshold: updatedSettings.default_low_stock_threshold
+        });
+      } else {
+        toast.error(response.data.message || 'Failed to update settings');
+      }
     } catch (error) {
       console.error('Error updating settings:', error);
-      toast.error('Failed to update settings');
+      const errorMessage = error.response?.data?.message || 'Failed to update settings';
+      toast.error(errorMessage);
     } finally {
       setSaving(false);
     }
@@ -102,6 +118,7 @@ const Settings = () => {
                 <input
                   type="number"
                   id="defaultLowStockThreshold"
+                  name="defaultLowStockThreshold"
                   min="0"
                   value={settings.defaultLowStockThreshold}
                   onChange={(e) => handleChange(e)}
