@@ -1,0 +1,314 @@
+/* Main CSS Entry Point - Enterprise Design System */
+
+/* Import Base Styles */
+@import './base/variables.css';
+@import './base/reset.css';
+@import './base/typography.css';
+
+/* Import Utility Classes */
+@import './utils/utilities.css';
+
+/* Import Component Styles */
+@import './components/layout.css';
+@import './components/buttons.css';
+@import './components/forms.css';
+
+/* Import Page Styles */
+@import './pages/auth.css';
+@import './pages/dashboard.css';
+
+/* Global Styles */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Focus Styles for Accessibility */
+*:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* Selection Styles */
+::selection {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-900);
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-gray-300);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-400);
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-300) var(--color-gray-100);
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-break-before {
+    page-break-before: always;
+  }
+  
+  .print-break-after {
+    page-break-after: always;
+  }
+  
+  .print-break-inside-avoid {
+    page-break-inside: avoid;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --color-gray-50: #ffffff;
+    --color-gray-100: #f0f0f0;
+    --color-gray-200: #e0e0e0;
+    --color-gray-300: #d0d0d0;
+    --color-gray-400: #b0b0b0;
+    --color-gray-500: #909090;
+    --color-gray-600: #707070;
+    --color-gray-700: #505050;
+    --color-gray-800: #303030;
+    --color-gray-900: #000000;
+  }
+  
+  .btn {
+    border-width: 2px;
+  }
+  
+  .form-input {
+    border-width: 2px;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--color-gray-900);
+    color: var(--color-gray-100);
+  }
+  
+  .card {
+    background-color: var(--color-gray-800);
+    border-color: var(--color-gray-700);
+  }
+  
+  .form-input {
+    background-color: var(--color-gray-800);
+    border-color: var(--color-gray-600);
+    color: var(--color-gray-100);
+  }
+  
+  .form-input::placeholder {
+    color: var(--color-gray-400);
+  }
+  
+  .btn-secondary {
+    background-color: var(--color-gray-800);
+    color: var(--color-gray-100);
+    border-color: var(--color-gray-600);
+  }
+  
+  .btn-secondary:hover:not(:disabled) {
+    background-color: var(--color-gray-700);
+    border-color: var(--color-gray-500);
+  }
+}
+
+/* Utility Classes for Responsive Design */
+@media (max-width: 640px) {
+  .hidden-mobile {
+    display: none !important;
+  }
+  
+  .block-mobile {
+    display: block !important;
+  }
+  
+  .flex-mobile {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .hidden-tablet {
+    display: none !important;
+  }
+  
+  .block-tablet {
+    display: block !important;
+  }
+  
+  .flex-tablet {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .hidden-desktop {
+    display: none !important;
+  }
+  
+  .block-desktop {
+    display: block !important;
+  }
+  
+  .flex-desktop {
+    display: flex !important;
+  }
+}
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-in-out;
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-in-out;
+}
+
+.slide-down {
+  animation: slideDown 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Text Selection */
+.text-select-none {
+  user-select: none;
+}
+
+.text-select-all {
+  user-select: all;
+}
+
+.text-select-auto {
+  user-select: auto;
+}
+
+/* Pointer Events */
+.pointer-events-none {
+  pointer-events: none;
+}
+
+.pointer-events-auto {
+  pointer-events: auto;
+}
+
+/* Visibility */
+.visible {
+  visibility: visible;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+/* Position */
+.sticky {
+  position: sticky;
+}
+
+.fixed {
+  position: fixed;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.relative {
+  position: relative;
+}
+
+.static {
+  position: static;
+}
+
+/* Z-Index Utilities */
+.z-auto { z-index: auto; }
+.z-0 { z-index: 0; }
+.z-10 { z-index: 10; }
+.z-20 { z-index: 20; }
+.z-30 { z-index: 30; }
+.z-40 { z-index: 40; }
+.z-50 { z-index: 50; }
+.z-50 { z-index: 50; }
+.z-auto { z-index: auto; }
