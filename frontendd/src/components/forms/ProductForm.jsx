@@ -25,6 +25,7 @@ const ProductForm = ({ product, onSuccess, onCancel }) => {
     },
   });
 
+  // Reset form when product prop changes (for editing)
   useEffect(() => {
     if (product) {
       reset(product);
@@ -44,7 +45,9 @@ const ProductForm = ({ product, onSuccess, onCancel }) => {
       onSuccess();
     } catch (error) {
       console.error('Error saving product:', error);
-      const message = error.response?.data?.message || `Failed to ${isEditing ? 'update' : 'create'} product`;
+      const message =
+        error.response?.data?.message ||
+        `Failed to ${isEditing ? 'update' : 'create'} product`;
       toast.error(message);
     } finally {
       setLoading(false);
@@ -52,187 +55,174 @@ const ProductForm = ({ product, onSuccess, onCancel }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-          <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+    <div className="modal-overlay">
+      <div className="modal modal-lg modal-form">
+        <div className="modal-header">
+          <h3 className="modal-title">
+            {isEditing ? 'Edit Product' : 'Add New Product'}
+          </h3>
+          <button onClick={onCancel} className="modal-close">
+            <XMarkIcon />
+          </button>
         </div>
 
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-lg leading-6 font-medium text-gray-900">
-                  {isEditing ? 'Edit Product' : 'Add New Product'}
-                </h3>
-                <p className="mt-1 text-sm text-gray-500">
-                  {isEditing ? 'Update the product information below.' : 'Fill in the product details below.'}
-                </p>
-              </div>
-              <button
-                onClick={onCancel}
-                className="text-gray-400 hover:text-gray-500"
-              >
-                <XMarkIcon className="h-6 w-6" />
-              </button>
+        <div className="modal-body">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {/* Product Name */}
+            <div className="form-group">
+              <label htmlFor="name" className="form-label required">
+                Product Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                {...register('name', { required: 'Product name is required' })}
+                className={`form-input ${errors.name ? 'error' : ''}`}
+                placeholder="Enter product name"
+              />
+              {errors.name && <p className="form-error">{errors.name.message}</p>}
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                  Product Name *
+            {/* SKU */}
+            <div className="form-group">
+              <label htmlFor="sku" className="form-label required">
+                SKU
+              </label>
+              <input
+                type="text"
+                id="sku"
+                {...register('sku', { required: 'SKU is required' })}
+                className={`form-input ${errors.sku ? 'error' : ''}`}
+                placeholder="Enter SKU"
+              />
+              {errors.sku && <p className="form-error">{errors.sku.message}</p>}
+            </div>
+
+            {/* Description */}
+            <div className="form-group">
+              <label htmlFor="description" className="form-label">
+                Description
+              </label>
+              <textarea
+                id="description"
+                rows={3}
+                {...register('description')}
+                className="form-input form-textarea"
+                placeholder="Enter product description (optional)"
+              />
+            </div>
+
+            {/* Quantity & Low Stock Threshold */}
+            <div className="form-row form-row-2">
+              <div className="form-group">
+                <label htmlFor="quantity" className="form-label">
+                  Quantity
                 </label>
                 <input
-                  type="text"
-                  id="name"
-                  {...register('name', { required: 'Product name is required' })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                  placeholder="Enter product name"
+                  type="number"
+                  id="quantity"
+                  min="0"
+                  {...register('quantity', {
+                    valueAsNumber: true,
+                    min: { value: 0, message: 'Quantity cannot be negative' },
+                  })}
+                  className={`form-input ${errors.quantity ? 'error' : ''}`}
+                  placeholder="0"
                 />
-                {errors.name && (
-                  <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+                {errors.quantity && (
+                  <p className="form-error">{errors.quantity.message}</p>
                 )}
               </div>
 
-              <div>
-                <label htmlFor="sku" className="block text-sm font-medium text-gray-700">
-                  SKU *
+              <div className="form-group">
+                <label htmlFor="lowStockThreshold" className="form-label">
+                  Low Stock Threshold
                 </label>
                 <input
-                  type="text"
-                  id="sku"
-                  {...register('sku', { required: 'SKU is required' })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                  placeholder="Enter SKU"
+                  type="number"
+                  id="lowStockThreshold"
+                  min="0"
+                  {...register('lowStockThreshold', {
+                    valueAsNumber: true,
+                    min: { value: 0, message: 'Threshold cannot be negative' },
+                  })}
+                  className={`form-input ${errors.lowStockThreshold ? 'error' : ''}`}
+                  placeholder="5"
                 />
-                {errors.sku && (
-                  <p className="mt-1 text-sm text-red-600">{errors.sku.message}</p>
+                {errors.lowStockThreshold && (
+                  <p className="form-error">{errors.lowStockThreshold.message}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Cost & Selling Price */}
+            <div className="form-row form-row-2">
+              <div className="form-group">
+                <label htmlFor="costPrice" className="form-label">
+                  Cost Price ($)
+                </label>
+                <input
+                  type="number"
+                  id="costPrice"
+                  step="0.01"
+                  min="0"
+                  {...register('costPrice', {
+                    valueAsNumber: true,
+                    min: { value: 0, message: 'Cost price cannot be negative' },
+                  })}
+                  className={`form-input ${errors.costPrice ? 'error' : ''}`}
+                  placeholder="0.00"
+                />
+                {errors.costPrice && (
+                  <p className="form-error">{errors.costPrice.message}</p>
                 )}
               </div>
 
-              <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                  Description
+              <div className="form-group">
+                <label htmlFor="sellingPrice" className="form-label">
+                  Selling Price ($)
                 </label>
-                <textarea
-                  id="description"
-                  rows={3}
-                  {...register('description')}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                  placeholder="Enter product description (optional)"
+                <input
+                  type="number"
+                  id="sellingPrice"
+                  step="0.01"
+                  min="0"
+                  {...register('sellingPrice', {
+                    valueAsNumber: true,
+                    min: { value: 0, message: 'Selling price cannot be negative' },
+                    validate: (value) =>
+                      value >= 0.01 || 'Selling price must be at least $0.01',
+                  })}
+                  className={`form-input ${errors.sellingPrice ? 'error' : ''}`}
+                  placeholder="0.00"
                 />
+                {errors.sellingPrice && (
+                  <p className="form-error">{errors.sellingPrice.message}</p>
+                )}
               </div>
+            </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">
-                    Quantity
-                  </label>
-                  <input
-                    type="number"
-                    id="quantity"
-                    min="0"
-                    {...register('quantity', {
-                      valueAsNumber: true,
-                      min: { value: 0, message: 'Quantity cannot be negative' }
-                    })}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                    placeholder="0"
-                  />
-                  {errors.quantity && (
-                    <p className="mt-1 text-sm text-red-600">{errors.quantity.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="lowStockThreshold" className="block text-sm font-medium text-gray-700">
-                    Low Stock Threshold
-                  </label>
-                  <input
-                    type="number"
-                    id="lowStockThreshold"
-                    min="0"
-                    {...register('lowStockThreshold', {
-                      valueAsNumber: true,
-                      min: { value: 0, message: 'Threshold cannot be negative' }
-                    })}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                    placeholder="5"
-                  />
-                  {errors.lowStockThreshold && (
-                    <p className="mt-1 text-sm text-red-600">{errors.lowStockThreshold.message}</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="costPrice" className="block text-sm font-medium text-gray-700">
-                    Cost Price ($)
-                  </label>
-                  <input
-                    type="number"
-                    id="costPrice"
-                    step="0.01"
-                    min="0"
-                    {...register('costPrice', {
-                      valueAsNumber: true,
-                      min: { value: 0, message: 'Cost price cannot be negative' }
-                    })}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                    placeholder="0.00"
-                  />
-                  {errors.costPrice && (
-                    <p className="mt-1 text-sm text-red-600">{errors.costPrice.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="sellingPrice" className="block text-sm font-medium text-gray-700">
-                    Selling Price ($)
-                  </label>
-                  <input
-                    type="number"
-                    id="sellingPrice"
-                    step="0.01"
-                    min="0"
-                    {...register('sellingPrice', {
-                      valueAsNumber: true,
-                      min: { value: 0, message: 'Selling price cannot be negative' }
-                    })}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                    placeholder="0.00"
-                  />
-                  {errors.sellingPrice && (
-                    <p className="mt-1 text-sm text-red-600">{errors.sellingPrice.message}</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="mt-6 sm:flex sm:flex-row-reverse">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-600 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? (
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                  ) : null}
-                  {loading ? 'Saving...' : (isEditing ? 'Update Product' : 'Create Product')}
-                </button>
-                <button
-                  type="button"
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={onCancel}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="btn btn-secondary"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className={`btn btn-primary ${loading ? 'loading' : ''}`}
+              >
+                {loading
+                  ? 'Saving...'
+                  : isEditing
+                  ? 'Update Product'
+                  : 'Create Product'}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

@@ -82,35 +82,30 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-2 text-gray-600">Welcome to your inventory management dashboard</p>
+    <div className="dashboard-container">
+      {/* Page Header */}
+      <div className="dashboard-header">
+        <h1 className="dashboard-title">Dashboard</h1>
+        <p className="dashboard-subtitle">Welcome to your inventory management dashboard</p>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="dashboard-stats">
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.name} className="bg-white overflow-hidden rounded-lg shadow">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className={`flex-shrink-0 ${stat.bgColor} rounded-md p-3`}>
-                    <Icon className={`h-6 w-6 ${stat.textColor}`} />
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
-                        {stat.name}
-                      </dt>
-                      <dd className="flex items-baseline">
-                        <div className="text-2xl font-semibold text-gray-900">
-                          {stat.value.toLocaleString()}
-                        </div>
-                      </dd>
-                    </dl>
-                  </div>
+            <div key={stat.name} className="stat-card">
+              <div className="stat-header">
+                <div className={`stat-icon ${stat.color}`}>
+                  <Icon />
+                </div>
+                <div className="stat-content">
+                  <dl>
+                    <dt className="stat-label">{stat.name}</dt>
+                    <dd className="stat-value">
+                      {stat.value.toLocaleString()}
+                    </dd>
+                  </dl>
                 </div>
               </div>
             </div>
@@ -118,51 +113,42 @@ const Dashboard = () => {
         })}
       </div>
 
-      {/* Low Stock Products */}
+      {/* Low Stock Alert */}
       {summary.lowStockProducts && summary.lowStockProducts.length > 0 && (
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-              Low Stock Products
-            </h3>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+        <div className="dashboard-alerts">
+          <div className="alert-card">
+            <div className="alert-header">
+              <h3 className="alert-title">
+                <ExclamationTriangleIcon />
+                Low Stock Alert
+              </h3>
+              <span className="alert-badge warning">
+                {summary.lowStockCount} items
+              </span>
+            </div>
+            </div>
+            <div className="alert-body">
+              <table className="low-stock-table">
+                <thead>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Product Name
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      SKU
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Current Quantity
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Threshold
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
+                    <th>Product Name</th>
+                    <th>SKU</th>
+                    <th>Current Quantity</th>
+                    <th>Threshold</th>
+                    <th>Status</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody>
                   {summary.lowStockProducts.map((product) => (
-                    <tr key={product.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {product.name}
+                    <tr key={product.id}>
+                      <td>
+                        <div className="product-name">{product.name}</div>
+                        <div className="product-sku">{product.sku}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {product.sku}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {product.quantity}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {product.low_stock_threshold}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                      <td className="stock-quantity">{product.quantity}</td>
+                      <td className="stock-threshold">{product.low_stock_threshold}</td>
+                      <td>
+                        <span className="table-status warning">
                           Low Stock
                         </span>
                       </td>
@@ -172,18 +158,21 @@ const Dashboard = () => {
               </table>
             </div>
           </div>
-        </div>
+       
       )}
 
+      {/* Empty State */}
       {summary.lowStockProducts && summary.lowStockProducts.length === 0 && (
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <div className="text-center">
-              <ExclamationTriangleIcon className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No low stock products</h3>
-              <p className="mt-1 text-sm text-gray-500">
-                All your products are above the low stock threshold.
-              </p>
+        <div className="dashboard-alerts">
+          <div className="alert-card">
+            <div className="alert-body">
+              <div className="empty-state">
+                <ExclamationTriangleIcon className="empty-state-icon" />
+                <h3 className="empty-state-title">No low stock products</h3>
+                <p className="empty-state-description">
+                  All your products are above low stock threshold.
+                </p>
+              </div>
             </div>
           </div>
         </div>
