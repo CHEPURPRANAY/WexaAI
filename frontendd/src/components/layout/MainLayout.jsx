@@ -1,15 +1,14 @@
 import React from 'react';
 import Sidebar from './Sidebar';
+import '../../styles/components/layout-enhanced.css';
 
 const MainLayout = ({ children }) => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="app-enhanced">
       <Sidebar />
-      <div className="main-content">
-        <main className="flex-1">
-          {children}
-        </main>
-      </div>
+      <main className="main-content-enhanced">
+        {children}
+      </main>
     </div>
   );
 };

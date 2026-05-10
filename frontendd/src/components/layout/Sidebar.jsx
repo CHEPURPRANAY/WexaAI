@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
@@ -7,11 +7,14 @@ import {
   CogIcon,
   ArrowRightOnRectangleIcon,
   Bars3Icon,
-  XMarkIcon
+  XMarkIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon
 } from '@heroicons/react/24/outline';
 
 const Sidebar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const location = useLocation();
   const { user, logout } = useAuth();
 
@@ -23,6 +26,7 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     logout();
+    setSidebarOpen(false);
   };
 
   const isActive = (href) => {
@@ -33,83 +37,111 @@ const Sidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  const toggleCollapse = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+  };
+
+  // Close sidebar on route change (mobile)
+  useEffect(() => {
+    if (window.innerWidth <= 1024) {
+      setSidebarOpen(false);
+    }
+  }, [location.pathname]);
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 1024) {
+        setSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <>
-      {/* Mobile sidebar backdrop */}
-      <div className={`sidebar-backdrop ${sidebarOpen ? 'active' : ''}`} onClick={() => setSidebarOpen(false)} />
-      
-      {/* Mobile sidebar */}
-      <div className={`sidebar ${sidebarOpen ? 'active' : ''} collapsed`}>
-        <SidebarContent navigation={navigation} user={user} onLogout={handleLogout} isActive={isActive} />
-      </div>
-
-      {/* Desktop sidebar */}
-      <div className="sidebar hidden-desktop">
-        <SidebarContent navigation={navigation} user={user} onLogout={handleLogout} isActive={isActive} />
-      </div>
-
-      {/* Mobile menu button */}
-      <button className={`sidebar-toggle ${sidebarOpen ? 'active' : ''}`} onClick={toggleSidebar}>
-        <Bars3Icon />
+      {/* Mobile Menu Button */}
+      <button 
+        className={`mobile-menu-btn-enhanced ${sidebarOpen ? 'active' : ''}`} 
+        onClick={toggleSidebar}
+        aria-label="Toggle sidebar"
+      >
+        {sidebarOpen ? <XMarkIcon /> : <Bars3Icon />}
       </button>
+
+      {/* Mobile Backdrop */}
+      <div 
+        className={`mobile-backdrop-enhanced ${sidebarOpen ? 'active' : ''}`} 
+        onClick={() => setSidebarOpen(false)}
+      />
+
+      {/* Sidebar */}
+      <aside className={`sidebar-enhanced ${sidebarOpen ? 'mobile active' : ''} ${sidebarCollapsed ? 'collapsed' : ''}`}>
+        {/* Sidebar Header */}
+        <div className="sidebar-enhanced-header">
+          <Link to="/dashboard" className="sidebar-enhanced-logo">
+            <div className="sidebar-enhanced-logo-icon">
+              <CubeIcon />
+            </div>
+            <span className="sidebar-enhanced-logo-text">StockFlow</span>
+          </Link>
+          
+          {/* Desktop Collapse Button */}
+          <button
+            className="sidebar-collapse-btn"
+            onClick={toggleCollapse}
+            aria-label="Toggle sidebar collapse"
+          >
+            {sidebarCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          </button>
+        </div>
+        
+        {/* Sidebar Navigation */}
+        <nav className="sidebar-enhanced-nav">
+          <div className="sidebar-nav-section">
+            <div className="sidebar-nav-title">Main Menu</div>
+            <ul className="sidebar-nav-list">
+              {navigation.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <li key={item.name} className="sidebar-nav-item">
+                    <Link
+                      to={item.href}
+                      className={`sidebar-nav-link ${isActive(item.href) ? 'active' : ''}`}
+                      onClick={() => setSidebarOpen(false)}
+                    >
+                      <Icon className="sidebar-nav-icon" />
+                      <span className="sidebar-nav-text">{item.name}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </nav>
+        
+        {/* Sidebar Footer */}
+        <div className="sidebar-enhanced-footer">
+          <div className="sidebar-user">
+            <div className="sidebar-user-avatar">
+              {user?.email?.charAt(0).toUpperCase()}
+            </div>
+            <div className="sidebar-user-info">
+              <div className="sidebar-user-name">{user?.email?.split('@')[0]}</div>
+              <div className="sidebar-user-email">{user?.organization_name}</div>
+            </div>
+          </div>
+          <button onClick={handleLogout} className="sidebar-logout-btn">
+            <ArrowRightOnRectangleIcon className="sidebar-logout-icon" />
+            <span>Logout</span>
+          </button>
+        </div>
+      </aside>
     </>
   );
 };
 
-const SidebarContent = ({ navigation, user, onLogout, isActive }) => {
-  return (
-    <>
-      {/* Sidebar Header */}
-      <div className="sidebar-header">
-        <Link to="/dashboard" className="sidebar-logo">
-          <div className="sidebar-logo-icon">
-            <CubeIcon />
-          </div>
-          <span className="sidebar-logo-text">StockFlow</span>
-        </Link>
-      </div>
-      
-      {/* Sidebar Navigation */}
-      <div className="sidebar-nav">
-        <div className="sidebar-nav-section">
-          <div className="sidebar-nav-title">Main Menu</div>
-          <ul className="sidebar-nav-list">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-              return (
-                <li key={item.name}>
-                  <Link
-                    to={item.href}
-                    className={`sidebar-nav-item ${isActive(item.href) ? 'active' : ''}`}
-                  >
-                    <Icon className="sidebar-nav-icon" />
-                    <span className="sidebar-nav-text">{item.name}</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
-      
-      {/* Sidebar Footer */}
-      <div className="sidebar-footer">
-        <div className="sidebar-user">
-          <div className="sidebar-user-avatar">
-            {user?.email?.charAt(0).toUpperCase()}
-          </div>
-          <div className="sidebar-user-info">
-            <div className="sidebar-user-name">{user?.email}</div>
-            <div className="sidebar-user-email">{user?.organization_name}</div>
-          </div>
-        </div>
-        <button onClick={onLogout} className="sidebar-logout">
-          <ArrowRightOnRectangleIcon />
-          <span>Logout</span>
-        </button>
-      </div>
-    </>
-  );
-};
 
 export default Sidebar;
