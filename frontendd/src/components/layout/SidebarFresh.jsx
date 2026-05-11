@@ -13,7 +13,7 @@ import {
 
 const SidebarFresh = ({ onCollapseChange }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed] = useState(false);
   const location = useLocation();
   const { user, logout } = useAuth();
 
