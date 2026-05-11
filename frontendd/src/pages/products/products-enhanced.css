@@ -170,13 +170,14 @@
 
 .products-btn-secondary {
   background: #2d2d2d;
-  color: #ffffff;
+  color: #d1d5db;
   border: 2px solid #404040;
 }
 
 .products-btn-secondary:hover {
   background: #404040;
   border-color: #6366f1;
+  color: #ffffff;
   transform: translateY(-1px);
 }
 
@@ -695,6 +696,24 @@
   color: #d1d5db;
   font-size: 0.9375rem;
   line-height: 1.6;
+}
+
+/* Delete button styling */
+.products-btn-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  border: none;
+}
+
+.products-btn-danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(239, 68, 68, 0.5);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+.products-btn-danger:active {
+  transform: translateY(0);
 }
 
 /* Responsive Design */

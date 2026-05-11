@@ -141,7 +141,7 @@
   }
   
   .form-input::placeholder {
-    color: var(--color-gray-400);
+    color: var(--color-gray-00);
   }
   
   .btn-secondary {

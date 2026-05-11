@@ -86,25 +86,25 @@ const Dashboard = () => {
       name: 'Total Products',
       value: summary.totalProducts,
       icon: CubeIcon,
-      iconType: 'primary',
-      trend: summary.totalProducts > 0 ? 'positive' : 'neutral',
-      trendValue: summary.totalProducts > 0 ? '+12%' : '0%'
+      iconType: 'primary'
     },
     {
       name: 'Total Quantity',
       value: summary.totalQuantity,
       icon: ChartBarIcon,
-      iconType: 'success',
-      trend: summary.totalQuantity > 100 ? 'positive' : 'neutral',
-      trendValue: summary.totalQuantity > 100 ? '+8%' : '0%'
+      iconType: 'success'
     },
     {
       name: 'Low Stock Items',
       value: summary.lowStockCount,
       icon: ExclamationTriangleIcon,
-      iconType: 'warning',
-      trend: summary.lowStockCount > 0 ? 'negative' : 'positive',
-      trendValue: summary.lowStockCount > 0 ? '-5%' : 'Good'
+      iconType: 'warning'
+    },
+    {
+      name: 'Out of Stock',
+      value: summary.outOfStockCount || 0,
+      icon: ExclamationTriangleIcon,
+      iconType: 'error'
     }
   ];
 
@@ -146,9 +146,6 @@ const Dashboard = () => {
                     <span className="stat-enhanced-label">{stat.name}</span>
                     <span className="stat-enhanced-value">
                       {stat.value.toLocaleString()}
-                    </span>
-                    <span className={`stat-enhanced-trend ${stat.trend}`}>
-                      {stat.trendValue}
                     </span>
                   </div>
                 </div>

@@ -238,7 +238,7 @@ const Products = () => {
             className="products-btn products-btn-primary"
           >
             <PlusIcon />
-            Add Your First Product
+            Add Your Product
           </button>
         </div>
       ) : (
@@ -407,7 +407,7 @@ const Products = () => {
                 <button
                   type="button"
                   onClick={() => handleDeleteProduct(deleteConfirm)}
-                  className="products-btn products-btn-primary"
+                  className="products-btn products-btn-danger"
                 >
                   Delete Product
                 </button>

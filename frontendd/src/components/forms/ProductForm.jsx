@@ -203,7 +203,7 @@ const ProductForm = ({ product, onSuccess, onCancel }) => {
                     min: { value: 0, message: 'Threshold cannot be negative' },
                   })}
                   className={`form-enhanced-input ${errors.lowStockThreshold ? 'error' : ''}`}
-                  placeholder="5"
+                  placeholder="Enter threshold"
                 />
                 {errors.lowStockThreshold && (
                   <p className="form-enhanced-error">{errors.lowStockThreshold.message}</p>

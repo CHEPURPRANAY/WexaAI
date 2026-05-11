@@ -89,15 +89,6 @@ const SidebarFresh = ({ onCollapseChange }) => {
             </div>
             <span className="fresh-brand-text">StockFlow</span>
           </Link>
-          
-          {/* Desktop Collapse Button */}
-          <button
-            className="fresh-toggle-btn"
-            onClick={toggleCollapse}
-            aria-label="Toggle sidebar collapse"
-          >
-            {sidebarCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </button>
         </div>
         
         {/* Sidebar Navigation */}
@@ -131,7 +122,7 @@ const SidebarFresh = ({ onCollapseChange }) => {
               {user?.email?.charAt(0).toUpperCase()}
             </div>
             <div className="fresh-user-info">
-              <div className="fresh-user-name truncate">{user?.email?.split('@')[0]}</div>
+              <div className="fresh-user-name truncate">{user?.email}</div>
               <div className="fresh-user-email truncate">{user?.organization_name || 'User'}</div>
             </div>
           </div>

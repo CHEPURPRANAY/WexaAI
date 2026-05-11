@@ -1,9 +1,9 @@
-/* Dashboard Page Styles */
+/* Dashboard Page Styles - Black Theme */
 
 .dashboard-container {
-  padding: var(--space-8);
+  padding: var(--space-4);
   min-height: 100vh;
-  background-color: var(--color-gray-50);
+  background: var(--bg-secondary);
 }
 
 .dashboard-header {
@@ -11,32 +11,32 @@
 }
 
 .dashboard-title {
-  font-size: var(--text-3xl);
+  font-size: clamp(1.5rem, 4vw, 2rem);
   font-weight: 700;
-  color: var(--color-gray-900);
+  color: var(--text-primary);
   margin-bottom: var(--space-2);
 }
 
 .dashboard-subtitle {
-  font-size: var(--text-base);
-  color: var(--color-gray-600);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
 }
 
-/* Stats Grid */
+/* Stats Grid - Dark Theme */
 .dashboard-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--space-6);
-  margin-bottom: var(--space-8);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .stat-card {
-  background-color: white;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-tertiary) 100%);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-4);
   transition: all var(--transition-base);
-  border: 1px solid var(--color-gray-200);
+  border: 1px solid var(--gray-300);
 }
 
 .stat-card:hover {

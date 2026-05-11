@@ -1,26 +1,13 @@
-/* Settings Page - Professional Responsive Design */
+/* Settings Page - Black Theme Professional Design */
 
 .settings-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: var(--space-6);
+  background: var(--bg-secondary);
+  padding: var(--space-4);
   position: relative;
   overflow-x: hidden;
 }
 
-.settings-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
-  pointer-events: none;
-}
 
 .settings-wrapper {
   max-width: 1200px;
@@ -29,23 +16,19 @@
   z-index: 1;
 }
 
-/* Page Header */
+/* Page Header - Dark Theme */
 .settings-header {
-  text-align: center;
-  margin-bottom: var(--space-10);
-  color: white;
+  text-align: left;
+  margin-bottom: var(--space-6);
+  color: var(--text-primary);
   animation: fadeInDown 0.8s ease-out;
 }
 
 .settings-title {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 800;
-  margin-bottom: var(--space-3);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+  margin-bottom: var(--space-2);
+  color: var(--text-primary);
 }
 
 .settings-subtitle {
@@ -70,16 +53,13 @@
   }
 }
 
-/* Settings Card */
+/* Settings Card - Dark Theme */
 .settings-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-tertiary) 100%);
   backdrop-filter: blur(20px);
-  border-radius: 24px;
-  box-shadow: 
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--gray-300);
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -91,22 +71,19 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
 }
 
 .settings-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
 }
 
-/* Card Header */
+/* Card Header - Dark Theme */
 .settings-card-header {
-  padding: var(--space-8) var(--space-8) var(--space-6);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: var(--space-6) var(--space-6) var(--space-4);
+  border-bottom: 1px solid var(--gray-300);
 }
 
 .settings-card-title-section {
@@ -117,15 +94,15 @@
 }
 
 .settings-card-icon {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 16px;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   transition: transform 0.2s ease;
 }
 
@@ -139,22 +116,22 @@
 }
 
 .settings-card-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-gray-900);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
   margin: 0;
 }
 
 .settings-card-description {
-  font-size: 1rem;
-  color: var(--color-gray-600);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin: 0;
 }
 
-/* Card Body */
+/* Card Body - Dark Theme */
 .settings-card-body {
-  padding: var(--space-8);
+  padding: var(--space-6);
 }
 
 /* Professional Form Styling */
@@ -173,7 +150,7 @@
 .settings-form-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--color-gray-700);
+  color: var(--text-primary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   display: flex;
@@ -188,53 +165,53 @@
 }
 
 .settings-form-description {
-  font-size: 0.875rem;
-  color: var(--color-gray-500);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
   line-height: 1.5;
   padding: var(--space-3);
-  background: rgba(99, 102, 241, 0.05);
-  border-left: 3px solid #6366f1;
+  background: rgba(99, 102, 241, 0.1);
+  border-left: 3px solid var(--primary);
   border-radius: 0 8px 8px 0;
 }
 
 .settings-form-input {
   width: 100%;
-  padding: var(--space-4) var(--space-5);
-  border: 2px solid #e5e7eb;
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--gray-300);
   border-radius: 12px;
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 500;
-  color: var(--color-gray-900);
-  background: white;
+  color: var(--text-primary);
+  background: var(--bg-primary);
   transition: all 0.2s ease;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .settings-form-input:focus {
   outline: none;
-  border-color: #6366f1;
+  border-color: var(--primary);
   box-shadow: 
-    0 0 0 3px rgba(99, 102, 241, 0.1),
-    0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    0 0 0 3px rgba(99, 102, 241, 0.2),
+    var(--shadow-md);
   transform: translateY(-1px);
 }
 
 .settings-form-input:hover {
-  border-color: #9ca3af;
+  border-color: var(--gray-400);
 }
 
-/* Form Actions */
+/* Form Actions - Dark Theme */
 .settings-form-actions {
   display: flex;
-  gap: var(--space-4);
+  gap: var(--space-3);
   padding-top: var(--space-4);
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-top: 1px solid var(--gray-300);
 }
 
 .settings-btn {
-  padding: var(--space-4) var(--space-8);
-  border-radius: 12px;
-  font-size: 1rem;
+  padding: var(--space-3) var(--space-6);
+  border-radius: 10px;
+  font-size: 0.875rem;
   font-weight: 600;
   border: none;
   cursor: pointer;
@@ -358,49 +335,50 @@
   box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
 }
 
-/* Loading State */
+/* Loading State - Dark Theme */
 .settings-loading {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
+  gap: var(--space-6);
   animation: fadeIn 0.5s ease;
 }
 
 .settings-loading-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 24px;
-  padding: var(--space-8);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-tertiary) 100%);
+  border-radius: 16px;
+  padding: var(--space-6);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--gray-300);
 }
 
 .settings-skeleton {
-  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.03) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 8px;
 }
 
 .settings-skeleton.title {
-  height: 2rem;
+  height: 1.5rem;
   width: 60%;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-3);
 }
 
 .settings-skeleton.text {
-  height: 1rem;
+  height: 0.875rem;
   width: 100%;
   margin-bottom: var(--space-2);
 }
 
 .settings-skeleton.input {
-  height: 3rem;
+  height: 2.5rem;
   width: 100%;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-3);
 }
 
 .settings-skeleton.button {
-  height: 3rem;
-  width: 150px;
+  height: 2.5rem;
+  width: 120px;
 }
 
 /* Animations */
@@ -444,65 +422,79 @@
 /* Responsive Design */
 @media (max-width: 1024px) {
   .settings-container {
-    padding: var(--space-5);
+    padding: var(--space-4);
   }
   
   .settings-grid {
     grid-template-columns: 1fr;
-    gap: var(--space-6);
+    gap: var(--space-5);
   }
   
   .settings-card-header {
-    padding: var(--space-6) var(--space-6) var(--space-4);
+    padding: var(--space-5) var(--space-5) var(--space-3);
   }
   
   .settings-card-body {
-    padding: var(--space-6);
+    padding: var(--space-5);
+  }
+  
+  .settings-form-group {
+    gap: var(--space-2);
+  }
+  
+  .settings-form-input {
+    padding: var(--space-3) var(--space-4);
+    font-size: 0.875rem;
+  }
+  
+  .settings-btn {
+    padding: var(--space-3) var(--space-5);
+    font-size: 0.875rem;
   }
 }
 
 @media (max-width: 768px) {
   .settings-container {
-    padding: var(--space-4);
+    padding: var(--space-3);
   }
   
   .settings-header {
-    margin-bottom: var(--space-8);
+    margin-bottom: var(--space-6);
     text-align: left;
   }
   
   .settings-title {
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
-  }
-  
-  .settings-subtitle {
-    font-size: 1rem;
+    font-size: 1.5rem;
   }
   
   .settings-card {
-    border-radius: 20px;
+    border-radius: 12px;
   }
   
   .settings-card-header {
-    padding: var(--space-5) var(--space-5) var(--space-4);
-  }
-  
-  .settings-card-body {
-    padding: var(--space-5);
+    padding: var(--space-4) var(--space-4) var(--space-3);
   }
   
   .settings-card-icon {
-    width: 40px;
-    height: 40px;
-  }
-  
-  .settings-card-icon svg {
-    width: 20px;
-    height: 20px;
+    width: 32px;
+    height: 32px;
   }
   
   .settings-card-title {
-    font-size: 1.25rem;
+    font-size: 1rem;
+  }
+  
+  .settings-card-body {
+    padding: var(--space-4);
+  }
+  
+  .settings-form-group {
+    gap: var(--space-2);
+  }
+  
+  .settings-form-input {
+    padding: var(--space-3);
+    font-size: 0.875rem;
   }
   
   .settings-form-actions {
