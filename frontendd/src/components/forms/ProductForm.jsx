@@ -258,6 +258,7 @@ const ProductForm = ({ product, onSuccess, onCancel }) => {
               </div>
             </div>
 
+
             <div className="modal-enhanced-footer">
               <button
                 type="button"
