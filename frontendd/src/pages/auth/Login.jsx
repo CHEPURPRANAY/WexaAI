@@ -104,7 +104,7 @@ const Login = () => {
               type="email"
               autoComplete="email"
               className={`form-input ${errors.email ? 'error' : ''}`}
-              placeholder="Enter your email"
+              placeholder="Enter your email "
             />
             {errors.email && (
               <p className="auth-form-error">{errors.email.message}</p>
