@@ -8,8 +8,7 @@ import {
   ArrowRightOnRectangleIcon,
   Bars3Icon,
   XMarkIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon
+ 
 } from '@heroicons/react/24/outline';
 
 const SidebarFresh = ({ onCollapseChange }) => {
@@ -37,11 +36,7 @@ const SidebarFresh = ({ onCollapseChange }) => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const toggleCollapse = () => {
-    const newCollapsedState = !sidebarCollapsed;
-    setSidebarCollapsed(newCollapsedState);
-    onCollapseChange?.(newCollapsedState);
-  };
+  
 
   // Close sidebar on route change (mobile)
   useEffect(() => {
