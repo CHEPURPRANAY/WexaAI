@@ -518,6 +518,7 @@
   
   .settings-card {
     border-radius: 16px;
+    overflow: visible; /* Ensure no overflow issues */
   }
   
   .settings-card-header {
@@ -535,13 +536,17 @@
   }
   
   .settings-form-input {
-    padding: var(--space-3) var(--space-4);
-    font-size: 0.875rem;
+    padding: var(--space-4) var(--space-4); /* Larger touch target */
+    font-size: 16px; /* Prevent zoom on iOS */
+    min-height: 48px; /* Minimum touch target size */
+    border-radius: 12px;
   }
   
   .settings-btn {
-    padding: var(--space-3) var(--space-6);
-    font-size: 0.875rem;
+    padding: var(--space-4) var(--space-6); /* Larger touch target */
+    font-size: 16px; /* Prevent zoom on iOS */
+    min-height: 48px; /* Minimum touch target size */
+    border-radius: 12px;
   }
   
   .account-info-item {
@@ -565,5 +570,30 @@
   
   .settings-card:active {
     transform: scale(0.98);
+  }
+  
+  /* Ensure proper touch interaction */
+  .settings-form-input {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    z-index: 60;
+    position: relative;
+  }
+  
+  .settings-btn {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    z-index: 60;
+    position: relative;
+  }
+  
+  /* Remove z-index from settings container to prevent stacking context */
+  .settings-container {
+    position: relative;
+  }
+  
+  /* Remove any potential overlay interference */
+  .settings-card::before {
+    pointer-events: none;
   }
 }
