@@ -438,13 +438,16 @@
 
 @media (max-width: 768px) {
   .modal-enhanced-overlay {
-    padding: var(--space-3);
+    padding: var(--space-2);
+    z-index: 1000;
   }
   
   .modal-enhanced {
     margin: var(--space-2);
     max-width: calc(100vw - var(--space-4));
     border-radius: 20px;
+    max-height: 95vh;
+    z-index: 1001;
   }
   
   .modal-enhanced-header {
@@ -456,11 +459,15 @@
   
   .modal-enhanced-title-section {
     width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
   }
   
   .modal-enhanced-icon {
     width: 40px;
     height: 40px;
+    flex-shrink: 0;
   }
   
   .modal-enhanced-icon svg {
@@ -470,20 +477,40 @@
   
   .modal-enhanced-title {
     font-size: 1.25rem;
+    line-height: 1.2;
+  }
+  
+  .modal-enhanced-close {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
   }
   
   .modal-enhanced-body {
     padding: var(--space-5);
+    max-height: calc(95vh - 180px);
+    overflow-y: auto;
   }
   
   .modal-enhanced-footer {
     padding: var(--space-4) var(--space-5) var(--space-5);
     flex-direction: column-reverse;
+    gap: var(--space-3);
   }
   
   .btn-enhanced {
     width: 100%;
     justify-content: center;
+    min-height: 48px;
+    padding: var(--space-3) var(--space-6);
+    font-size: 0.875rem;
+    font-weight: 600;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   
   .form-enhanced {
@@ -494,40 +521,54 @@
   .form-enhanced-textarea {
     padding: var(--space-3) var(--space-4);
     font-size: 0.875rem;
+    min-height: 44px;
+    touch-action: manipulation;
   }
   
-  .btn-enhanced {
-    padding: var(--space-3) var(--space-6);
-    font-size: 0.875rem;
+  .form-enhanced-textarea {
+    min-height: 80px;
+    resize: vertical;
   }
 }
 
 @media (max-width: 640px) {
   .modal-enhanced-overlay {
-    padding: var(--space-2);
+    padding: var(--space-1);
+    z-index: 1000;
   }
   
   .modal-enhanced {
     margin: var(--space-1);
     max-width: calc(100vw - var(--space-2));
     border-radius: 16px;
+    max-height: 98vh;
+    z-index: 1001;
   }
   
   .modal-enhanced-header {
     padding: var(--space-4);
+    position: relative;
+  }
+  
+  .modal-enhanced-title-section {
+    gap: var(--space-2);
   }
   
   .modal-enhanced-body {
     padding: var(--space-4);
+    max-height: calc(98vh - 160px);
+    overflow-y: auto;
   }
   
   .modal-enhanced-footer {
     padding: var(--space-4);
+    gap: var(--space-2);
   }
   
   .modal-enhanced-icon {
     width: 36px;
     height: 36px;
+    flex-shrink: 0;
   }
   
   .modal-enhanced-icon svg {
@@ -537,11 +578,16 @@
   
   .modal-enhanced-title {
     font-size: 1.125rem;
+    line-height: 1.2;
   }
   
   .modal-enhanced-close {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    top: var(--space-3);
+    right: var(--space-3);
   }
   
   .modal-enhanced-close svg {
@@ -561,15 +607,21 @@
   .form-enhanced-textarea {
     padding: var(--space-3);
     font-size: 0.875rem;
+    min-height: 44px;
+    touch-action: manipulation;
   }
   
   .form-enhanced-textarea {
     min-height: 80px;
+    resize: vertical;
   }
   
   .btn-enhanced {
     padding: var(--space-3) var(--space-5);
     font-size: 0.875rem;
+    min-height: 48px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 }
 

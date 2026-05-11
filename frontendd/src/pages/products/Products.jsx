@@ -56,9 +56,8 @@ const Products = () => {
   const handleDeleteProduct = async (productId) => {
     try {
       const response = await api.delete(`/products/${productId}`);
-      
+
       if (response.data.success) {
-        // Immediately remove product from local state for instant UI update
         setProducts((prevProducts) => prevProducts.filter((p) => p.id !== productId));
         setAlert({
           type: 'success',
@@ -72,7 +71,7 @@ const Products = () => {
           message: response.data.message || 'Failed to delete product'
         });
       }
-      
+
       setDeleteConfirm(null);
     } catch (error) {
       console.error('Error deleting product:', error);
@@ -89,38 +88,26 @@ const Products = () => {
   const handleFormSuccess = (updatedProduct = null) => {
     setShowForm(false);
     setEditingProduct(null);
-    
+
     if (updatedProduct) {
-      // If we have updated product, update it directly in state for instant feedback
       setProducts((prevProducts) =>
         prevProducts.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
       );
     } else {
-      // Otherwise fetch fresh data from database
       fetchProducts();
     }
   };
 
   const getStockStatus = (product) => {
     if (product.quantity === 0) {
-      return {
-        text: 'Out of Stock',
-        className: 'out-of-stock'
-      };
+      return { text: 'Out of Stock', className: 'out-of-stock' };
     }
     if (product.quantity <= product.low_stock_threshold) {
-      return {
-        text: 'Low Stock',
-        className: 'low-stock'
-      };
+      return { text: 'Low Stock', className: 'low-stock' };
     }
-    return {
-      text: 'In Stock',
-      className: 'in-stock'
-    };
+    return { text: 'In Stock', className: 'in-stock' };
   };
 
-  // Calculate statistics
   const stats = {
     total: products.length,
     inStock: products.filter(p => p.quantity > p.low_stock_threshold).length,
@@ -166,7 +153,7 @@ const Products = () => {
             </div>
             <h1 className="products-title">Products</h1>
           </div>
-          
+
           <div className="products-actions">
             <div className="products-search-container">
               <MagnifyingGlassIcon className="products-search-icon" />
@@ -178,7 +165,9 @@ const Products = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+            {/* FIX: Use type="button" to prevent any accidental form submission behavior */}
             <button
+              type="button"
               onClick={handleAddProduct}
               className="products-btn products-btn-primary"
             >
@@ -195,47 +184,56 @@ const Products = () => {
           <div className="products-stat-icon total">
             <CubeIcon />
           </div>
-          <div className="products-stat-value">{stats.total}</div>
-          <div className="products-stat-label">Total Products</div>
+          <div className="products-stat-content">
+            <div className="products-stat-value">{stats.total}</div>
+            <div className="products-stat-label">Total Products</div>
+          </div>
         </div>
-        
+
         <div className="products-stat-card">
           <div className="products-stat-icon in-stock">
             <CubeIcon />
           </div>
-          <div className="products-stat-value">{stats.inStock}</div>
-          <div className="products-stat-label">In Stock</div>
+          <div className="products-stat-content">
+            <div className="products-stat-value">{stats.inStock}</div>
+            <div className="products-stat-label">In Stock</div>
+          </div>
         </div>
-        
+
         <div className="products-stat-card">
           <div className="products-stat-icon low-stock">
             <CubeIcon />
           </div>
-          <div className="products-stat-value">{stats.lowStock}</div>
-          <div className="products-stat-label">Low Stock</div>
+          <div className="products-stat-content">
+            <div className="products-stat-value">{stats.lowStock}</div>
+            <div className="products-stat-label">Low Stock</div>
+          </div>
         </div>
-        
+
         <div className="products-stat-card">
           <div className="products-stat-icon out-of-stock">
             <CubeIcon />
           </div>
-          <div className="products-stat-value">{stats.outOfStock}</div>
-          <div className="products-stat-label">Out of Stock</div>
+          <div className="products-stat-content">
+            <div className="products-stat-value">{stats.outOfStock}</div>
+            <div className="products-stat-label">Out of Stock</div>
+          </div>
         </div>
       </div>
 
-      {/* Products Grid */}
+      {/* Products Table / Empty State */}
       {products.length === 0 && !loading ? (
         <div className="products-empty-state">
           <CubeIcon className="products-empty-icon" />
           <h2 className="products-empty-title">No Products Found</h2>
           <p className="products-empty-description">
-            {searchTerm 
+            {searchTerm
               ? 'No products match your search criteria. Try adjusting your search terms.'
               : 'You haven\'t added any products yet. Click "Add Product" to get started with your inventory management.'
             }
           </p>
           <button
+            type="button"
             onClick={handleAddProduct}
             className="products-btn products-btn-primary"
           >
@@ -244,61 +242,128 @@ const Products = () => {
           </button>
         </div>
       ) : (
-        <div className="products-grid">
-          {products.map((product) => {
-            const stockStatus = getStockStatus(product);
-            return (
-              <div key={product.id} className="products-card">
-                <div className="products-card-header">
-                  <h3 className="products-card-title">
-                    {product.name}
+        <>
+          {/* Desktop Table View */}
+          <div className="products-table-container">
+            <table className="products-table">
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>SKU</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Threshold</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((product) => {
+                  const stockStatus = getStockStatus(product);
+                  return (
+                    <tr key={product.id} className="products-table-row">
+                      <td className="products-name-cell">
+                        <div className="products-name-content">
+                          {product.name}
+                          <span className={`products-stock-badge ${stockStatus.className}`}>
+                            {stockStatus.text}
+                          </span>
+                        </div>
+                      </td>
+                      <td>{product.sku}</td>
+                      <td>{product.quantity}</td>
+                      <td>${product.selling_price}</td>
+                      <td>{product.low_stock_threshold}</td>
+                      <td>
+                        <span className={`products-status-indicator ${stockStatus.className}`}>
+                          {stockStatus.text}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="products-table-actions">
+                          <button
+                            type="button"
+                            onClick={() => handleEditProduct(product)}
+                            className="products-action-btn-table edit"
+                            title="Edit Product"
+                          >
+                            <PencilIcon />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setDeleteConfirm(product.id)}
+                            className="products-action-btn-table delete"
+                            title="Delete Product"
+                          >
+                            <TrashIcon />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="products-mobile-grid">
+            {products.map((product) => {
+              const stockStatus = getStockStatus(product);
+              return (
+                <div key={product.id} className="products-mobile-card">
+                  <div className="products-mobile-header">
+                    <h3 className="products-mobile-title">{product.name}</h3>
                     <span className={`products-stock-badge ${stockStatus.className}`}>
                       {stockStatus.text}
                     </span>
-                  </h3>
-                </div>
-                
-                <div className="products-card-body">
-                  <div className="products-info-grid">
-                    <div className="products-info-item">
-                      <span className="products-info-label">SKU</span>
-                      <span className="products-info-value">{product.sku}</span>
+                  </div>
+
+                  <div className="products-mobile-body">
+                    <div className="products-mobile-info">
+                      <div className="products-mobile-row">
+                        <span className="products-mobile-label">SKU:</span>
+                        <span className="products-mobile-value">{product.sku}</span>
+                      </div>
+                      <div className="products-mobile-row">
+                        <span className="products-mobile-label">Quantity:</span>
+                        <span className="products-mobile-value">{product.quantity}</span>
+                      </div>
+                      <div className="products-mobile-row">
+                        <span className="products-mobile-label">Price:</span>
+                        <span className="products-mobile-value">${product.selling_price}</span>
+                      </div>
+                      <div className="products-mobile-row">
+                        <span className="products-mobile-label">Threshold:</span>
+                        <span className="products-mobile-value">{product.low_stock_threshold}</span>
+                      </div>
                     </div>
-                    <div className="products-info-item">
-                      <span className="products-info-label">Quantity</span>
-                      <span className="products-info-value">{product.quantity}</span>
-                    </div>
-                    <div className="products-info-item">
-                      <span className="products-info-label">Price</span>
-                      <span className="products-info-value">${product.selling_price}</span>
-                    </div>
-                    <div className="products-info-item">
-                      <span className="products-info-label">Threshold</span>
-                      <span className="products-info-value">{product.low_stock_threshold}</span>
+
+                    {/* FIX: Use type="button" on all mobile action buttons */}
+                    <div className="products-mobile-actions">
+                      <button
+                        type="button"
+                        onClick={() => handleEditProduct(product)}
+                        className="products-mobile-btn edit"
+                      >
+                        <PencilIcon />
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setDeleteConfirm(product.id)}
+                        className="products-mobile-btn delete"
+                      >
+                        <TrashIcon />
+                        Delete
+                      </button>
                     </div>
                   </div>
-                  
-                  <div className="products-card-actions">
-                    <button
-                      onClick={() => handleEditProduct(product)}
-                      className="products-action-btn edit"
-                    >
-                      <PencilIcon />
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => setDeleteConfirm(product.id)}
-                      className="products-action-btn delete"
-                    >
-                      <TrashIcon />
-                      Delete
-                    </button>
-                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </>
       )}
 
       {/* Product Form Modal */}
@@ -320,6 +385,7 @@ const Products = () => {
             <div className="modal-enhanced-header">
               <h2 className="modal-enhanced-title">Confirm Delete</h2>
               <button
+                type="button"
                 onClick={() => setDeleteConfirm(null)}
                 className="modal-enhanced-close"
               >
@@ -332,12 +398,14 @@ const Products = () => {
               </p>
               <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
                 <button
+                  type="button"
                   onClick={() => setDeleteConfirm(null)}
                   className="products-btn products-btn-secondary"
                 >
                   Cancel
                 </button>
                 <button
+                  type="button"
                   onClick={() => handleDeleteProduct(deleteConfirm)}
                   className="products-btn products-btn-primary"
                 >
@@ -351,5 +419,4 @@ const Products = () => {
     </div>
   );
 };
-
 export default Products;
